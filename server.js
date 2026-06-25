@@ -278,7 +278,8 @@ const server = http.createServer((req, res) => {
           const list = readAll();
           list.push(rec);
           writeAll(list);
-          return sendJson(res, 201, { ok: true, id: rec.id });
+          // return the running total so the client can show "you're respondent #N"
+          return sendJson(res, 201, { ok: true, id: rec.id, total: list.length });
         } catch (e) {
           return sendJson(res, 500, { ok: false, error: 'Could not save' });
         }

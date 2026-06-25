@@ -17,27 +17,36 @@
         <img src="/assets/logo.svg" alt="next" />
         <span class="city">721401</span>
       </a>
-      <a class="header-link" href="/admin.html">Admin</a>
+      <div class="header-right">
+        <div class="lang-switch" role="group" aria-label="Choose language">
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="bn" lang="bn">বাংলা</button>
+          <button type="button" class="lang-btn" data-lang="hi" lang="hi">हिंदी</button>
+        </div>
+        <a class="header-link" href="/admin.html">Admin</a>
+      </div>
     </div>
   </header>
 
   <main class="container">
     <!-- Hero (shown before survey starts) -->
     <section class="hero" id="hero">
-      <span class="pill"><span class="dot"></span> 2-minute survey · Help shape your city's delivery</span>
-      <h1>What do you need <span class="grad">next</span>?</h1>
+      <span class="pill"><span class="dot"></span> <span data-i18n="2-minute survey · Help shape your city’s delivery">2-minute survey · Help shape your city’s delivery</span></span>
+      <h1><span data-i18n="What do you need">What do you need</span> <span class="grad" data-i18n="next">next</span><span data-i18n="?">?</span></h1>
       <p class="lead">
-        We're building a fast local delivery app for <strong>721401</strong> — groceries, daily
-        essentials and more, delivered from shops near you. Your answers decide if &amp; how we launch.
+        <span data-i18n="We’re building a fast local delivery app for">We’re building a fast local delivery app for</span>
+        <strong>721401</strong> <span data-i18n="groceries, daily essentials and more, delivered from shops near you. Your answers decide if & how we launch.">— groceries, daily
+        essentials and more, delivered from shops near you. Your answers decide if &amp; how we launch.</span>
       </p>
       <div class="trust">
-        <span><span class="ck">✓</span> Takes ~2 minutes</span>
-        <span><span class="ck">✓</span> 100% anonymous (unless you join the waitlist)</span>
-        <span><span class="ck">✓</span> Works on any device</span>
+        <span><span class="ck">✓</span> <span data-i18n="Takes ~2 minutes">Takes ~2 minutes</span></span>
+        <span><span class="ck">✓</span> <span data-i18n="100% anonymous (unless you join the waitlist)">100% anonymous (unless you join the waitlist)</span></span>
+        <span><span class="ck">✓</span> <span data-i18n="Works on any device">Works on any device</span></span>
       </div>
+      <p class="incentive" data-i18n="🎁 Early users get free delivery for a week">🎁 Early users get free delivery for a week</p>
       <p class="social-proof" id="socialProof"></p>
       <div class="actions" style="justify-content:center; margin-top:24px;">
-        <button class="btn btn-green" id="startBtn">Start the survey <span class="arrow">→</span></button>
+        <button class="btn btn-green" id="startBtn"><span data-i18n="Start the survey">Start the survey</span> <span class="arrow">→</span></button>
       </div>
     </section>
 
@@ -63,11 +72,12 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p><strong>next</strong> · Fast local delivery for 721401 · <a href="/admin.html">Admin dashboard</a></p>
-      <p style="margin-top:6px;">Made for the people of our city. What do you need next?</p>
+      <p><strong>next</strong> · <span data-i18n="Fast local delivery for 721401">Fast local delivery for 721401</span> · <a href="/admin.html" data-i18n="Admin dashboard">Admin dashboard</a></p>
+      <p style="margin-top:6px;" data-i18n="Made for the people of our city. What do you need next?">Made for the people of our city. What do you need next?</p>
     </div>
   </footer>
 
+  <script src="/js/i18n.js"></script>
   <script src="/js/survey.js"></script>
 </body>
 </html>

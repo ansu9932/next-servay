@@ -7,6 +7,11 @@
 
   var DEFAULT_PINCODE = '721401';
 
+  // i18n helper — translates via window.NextI18n, falls back to English.
+  function t(s) {
+    return (window.NextI18n && window.NextI18n.t) ? window.NextI18n.t(s) : s;
+  }
+
   /* ---------- Question schema ---------- */
   // Shared profile step
   var profileStep = {
@@ -181,13 +186,13 @@
     var step = steps[current];
 
     var wrap = el('div', 'step active');
-    wrap.appendChild(el('div', 'step-eyebrow', step.eyebrow));
-    wrap.appendChild(el('h2', null, step.title));
-    if (step.help) wrap.appendChild(el('p', 'help', step.help));
+    wrap.appendChild(el('div', 'step-eyebrow', t(step.eyebrow)));
+    wrap.appendChild(el('h2', null, t(step.title)));
+    if (step.help) wrap.appendChild(el('p', 'help', t(step.help)));
 
     if (step.isRole) {
       wrap.appendChild(renderRoles());
-      wrap.appendChild(el('p', 'tap-hint', 'Just tap your answer — we\u2019ll take you straight to the next step \u2728'));
+      wrap.appendChild(el('p', 'tap-hint', t('Just tap your answer \u2014 we\u2019ll take you straight to the next step \u2728')));
     } else {
       step.fields.forEach(function (f) {
         var node = renderField(f);
@@ -206,7 +211,7 @@
       var c = el('div', 'role' + (state.role === r.value ? ' selected' : ''));
       c.setAttribute('role', 'button');
       c.setAttribute('tabindex', '0');
-      c.innerHTML = '<div class="ic">' + r.ic + '</div><div class="t">' + r.t + '</div><div class="d">' + r.d + '</div>';
+      c.innerHTML = '<div class="ic">' + r.ic + '</div><div class="t">' + t(r.t) + '</div><div class="d">' + t(r.d) + '</div>';
       function pick() {
         if (advancing) return;
         state.role = r.value;
@@ -232,9 +237,9 @@
 
     var label = el('label', 'q');
     label.setAttribute('for', 'f_' + f.name);
-    label.innerHTML = f.q + (f.required ? ' <span class="req">*</span>' : (f.optional ? ' <span class="optional">(optional)</span>' : ''));
+    label.innerHTML = t(f.q) + (f.required ? ' <span class="req">*</span>' : (f.optional ? ' <span class="optional">(' + t('optional') + ')</span>' : ''));
     field.appendChild(label);
-    if (f.sub) field.appendChild(el('div', 'sub', f.sub));
+    if (f.sub) field.appendChild(el('div', 'sub', t(f.sub)));
 
     var saved = state.data[f.name];
 
@@ -243,7 +248,7 @@
       inp.type = f.type;
       inp.id = 'f_' + f.name;
       inp.name = f.name;
-      if (f.placeholder) inp.placeholder = f.placeholder;
+      if (f.placeholder) inp.placeholder = t(f.placeholder);
       if (f.inputmode) inp.setAttribute('inputmode', f.inputmode);
       inp.value = saved != null ? saved : (f.value || '');
       inp.addEventListener('input', function () { state.data[f.name] = inp.value; clearErr(field); });
@@ -251,7 +256,7 @@
     } else if (f.type === 'textarea') {
       var ta = el('textarea');
       ta.id = 'f_' + f.name; ta.name = f.name;
-      if (f.placeholder) ta.placeholder = f.placeholder;
+      if (f.placeholder) ta.placeholder = t(f.placeholder);
       ta.value = saved || '';
       ta.addEventListener('input', function () { state.data[f.name] = ta.value; });
       field.appendChild(ta);
@@ -282,7 +287,7 @@
 
         lab.appendChild(input);
         lab.appendChild(el('span', 'mark'));
-        lab.appendChild(el('span', 'label', optText));
+        lab.appendChild(el('span', 'label', t(optText)));
         opts.appendChild(lab);
       });
       field.appendChild(opts);
@@ -303,12 +308,12 @@
       }
       field.appendChild(scale);
       var legend = el('div', 'scale-legend');
-      legend.appendChild(el('span', null, f.low || '0'));
-      legend.appendChild(el('span', null, f.high || '10'));
+      legend.appendChild(el('span', null, t(f.low || '0')));
+      legend.appendChild(el('span', null, t(f.high || '10')));
       field.appendChild(legend);
     }
 
-    field.appendChild(el('div', 'err-msg', 'Please answer this question.'));
+    field.appendChild(el('div', 'err-msg', t('Please answer this question.')));
     return field;
   }
 
@@ -330,7 +335,7 @@
   }
   function showErr(field, msg) {
     var e = field.querySelector('.err-msg');
-    e.textContent = msg || 'Please answer this question.';
+    e.textContent = msg || t('Please answer this question.');
     e.classList.add('show');
     var inp = field.querySelector('input[type=text], input[type=email], input[type=tel], textarea');
     if (inp) inp.classList.add('input-error');
@@ -339,7 +344,7 @@
   function validateStep() {
     var step = steps[current];
     if (step.isRole) {
-      if (!state.role) { alert('Please choose one option to continue.'); return false; }
+      if (!state.role) { alert(t('Please choose one option to continue.')); return false; }
       return true;
     }
     var ok = true, firstBad = null;
@@ -357,10 +362,10 @@
       }
       // light format checks
       if (f.name === 'pincode' && v && !/^\d{6}$/.test(String(v).trim())) {
-        showErr(field, 'Enter a valid 6-digit pincode.'); ok = false; if (!firstBad) firstBad = field;
+        showErr(field, t('Enter a valid 6-digit pincode.')); ok = false; if (!firstBad) firstBad = field;
       }
       if (f.name === 'contact' && field.style.display !== 'none' && state.data.joinWaitlist === '✅ Yes, add me') {
-        if (!v || String(v).trim() === '') { showErr(field, 'Please add a phone or email so we can reach you.'); ok = false; if (!firstBad) firstBad = field; }
+        if (!v || String(v).trim() === '') { showErr(field, t('Please add a phone or email so we can reach you.')); ok = false; if (!firstBad) firstBad = field; }
       }
     });
     if (firstBad) firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -372,13 +377,13 @@
   function cheer(n, total) {
     var idx = Math.min(CHEERS.length - 1, Math.floor(((n - 1) / total) * CHEERS.length));
     if (n === total) idx = CHEERS.length - 1;
-    return CHEERS[idx];
+    return t(CHEERS[idx]);
   }
   function timeLeft(n, total) {
     var rem = total - n;
     if (rem <= 0) return '';
     var secs = rem * 18;
-    return secs >= 60 ? ' \u00B7 ~' + Math.ceil(secs / 60) + ' min left' : ' \u00B7 ~' + secs + 's left';
+    return secs >= 60 ? ' \u00B7 ~' + Math.ceil(secs / 60) + ' ' + t('min left') : ' \u00B7 ~' + secs + t('s left');
   }
   function updateChrome() {
     var total = steps.length;
@@ -388,6 +393,7 @@
     $('#stepCount').textContent = n + ' / ' + total + timeLeft(n, total);
     $('#progressFill').style.width = Math.round((n / total) * 100) + '%';
     $('#backBtn').style.display = current === 0 ? 'none' : '';
+    $('#backBtn').innerHTML = '\u2190 ' + t('Back');
     var navActions = $('#navActions');
     if (step.isRole) {
       // Welcome step: selecting a role is enough — hide all nav buttons.
@@ -397,7 +403,7 @@
       if (navActions) navActions.style.display = '';
       $('#nextBtn').style.display = '';
       var isLast = current === steps.length - 1;
-      $('#nextBtn').innerHTML = isLast ? 'Submit survey <span class="arrow">\u2713</span>' : 'Continue <span class="arrow">\u2192</span>';
+      $('#nextBtn').innerHTML = isLast ? t('Submit survey') + ' <span class="arrow">\u2713</span>' : t('Continue') + ' <span class="arrow">\u2192</span>';
     }
   }
 
@@ -421,7 +427,7 @@
   function submit() {
     var btn = $('#nextBtn');
     btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Sending…';
+    btn.innerHTML = '<span class="spinner"></span> ' + t('Sending\u2026');
 
     var payload = Object.assign({ role: state.role }, state.data);
     payload.joinWaitlist = state.data.joinWaitlist === '✅ Yes, add me';
@@ -432,29 +438,49 @@
       body: JSON.stringify(payload)
     }).then(function (r) { return r.json(); })
       .then(function (res) {
-        if (res && res.ok) showThankYou();
+        if (res && res.ok) showThankYou(res.total);
         else throw new Error('save failed');
       })
       .catch(function () {
         btn.disabled = false;
-        btn.innerHTML = 'Submit survey <span class="arrow">✓</span>';
-        alert('Sorry, something went wrong saving your answers. Please try again.');
+        btn.innerHTML = t('Submit survey') + ' <span class="arrow">✓</span>';
+        alert(t('Sorry, something went wrong saving your answers. Please try again.'));
       });
   }
 
-  function showThankYou() {
+  function showThankYou(total) {
     $('#progressWrap').style.display = 'none';
     var waitlisted = state.data.joinWaitlist === '✅ Yes, add me';
+
+    // Live "you're respondent #N" badge (total returned by the server = this respondent's number)
+    var respondentBadge = '';
+    if (typeof total === 'number' && total > 0) {
+      respondentBadge =
+        '<div class="respondent-badge">\uD83D\uDD22 ' + t('You\u2019re respondent') +
+        ' <strong>#' + total + '</strong> ' + t('in 721401') + '</div>';
+    }
+
+    // WhatsApp share — spreads the survey locally
+    var shareUrl = location.origin + '/';
+    var shareMsg = t('I just shared what I need from next \u2014 a fast local delivery app for 721401. Add your voice too:');
+    var waHref = 'https://wa.me/?text=' + encodeURIComponent(shareMsg + ' ' + shareUrl);
+
     $('#surveyCard').innerHTML =
       '<div class="done">' +
         '<div class="badge"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#40CC52" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
-        '<h2>Thank you! 🎉</h2>' +
+        '<h2>' + t('Thank you! \uD83C\uDF89') + '</h2>' +
         '<p>' + (waitlisted
-          ? "You're on the waitlist — we'll reach out the moment next launches near you."
-          : 'Your answers help us decide how to launch next in 721401. We really appreciate it.') + '</p>' +
-        '<div class="actions" style="justify-content:center;">' +
-          '<button class="btn btn-ghost" id="againBtn">Submit another response</button>' +
-          '<a class="btn btn-green" href="/">Back to home</a>' +
+          ? t('You\u2019re on the waitlist \u2014 we\u2019ll reach out the moment next launches near you.')
+          : t('Your answers help us decide how to launch next in 721401. We really appreciate it.')) + '</p>' +
+        respondentBadge +
+        '<p class="incentive incentive-done" data-i18n="\uD83C\uDF81 Early users get free delivery for a week">' +
+          t('\uD83C\uDF81 Early users get free delivery for a week') + '</p>' +
+        '<div class="actions" style="justify-content:center; flex-wrap:wrap;">' +
+          '<a class="btn btn-whatsapp" href="' + waHref + '" target="_blank" rel="noopener">' + t('\uD83D\uDCF2 Share on WhatsApp') + '</a>' +
+        '</div>' +
+        '<div class="actions" style="justify-content:center; flex-wrap:wrap; margin-top:12px;">' +
+          '<button class="btn btn-ghost" id="againBtn">' + t('Submit another response') + '</button>' +
+          '<a class="btn btn-green" href="/">' + t('Back to home') + '</a>' +
         '</div>' +
       '</div>';
     var again = document.getElementById('againBtn');
@@ -517,20 +543,46 @@
     $('#startBtn').addEventListener('click', startSurvey);
     $('#nextBtn').addEventListener('click', next);
     $('#backBtn').addEventListener('click', back);
+
+    // Language switcher wiring + initial translation of static content.
+    if (window.NextI18n) {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-lang]'), function (btn) {
+        btn.addEventListener('click', function () { window.NextI18n.setLang(btn.getAttribute('data-lang')); });
+      });
+      window.NextI18n.apply();
+    }
+
+    // Re-translate dynamic survey content whenever the language changes.
+    document.addEventListener('next:langchange', function () {
+      if (window.NextI18n) window.NextI18n.apply();
+      // If the survey is open and not on the thank-you screen, re-render the current step.
+      var surveyOpen = $('#surveyCard') && $('#surveyCard').style.display !== 'none';
+      var onDone = $('#surveyCard') && $('#surveyCard').querySelector('.done');
+      if (surveyOpen && !onDone && $('#steps')) { render(); }
+      renderSocialProof();
+    });
+
     loadSocialProof();
     // allow deep-link ?start=1
     if (/[?&]start=1/.test(location.search)) startSurvey();
   });
 
+  var socialTotal = null;
+  function renderSocialProof() {
+    var node = document.getElementById('socialProof');
+    if (!node || socialTotal === null) return;
+    var n = socialTotal;
+    node.textContent = n >= 5
+      ? '\uD83D\uDE4C ' + n + ' ' + t('neighbours in 721401 have already shared their thoughts')
+      : t('\u2728 Be one of the first in 721401 to shape next');
+    node.style.opacity = '1';
+  }
   function loadSocialProof() {
     var node = document.getElementById('socialProof');
     if (!node) return;
     fetch('/api/stats/public').then(function (r) { return r.json(); }).then(function (res) {
-      var n = res && res.total ? res.total : 0;
-      node.textContent = n >= 5
-        ? '\uD83D\uDE4C ' + n + ' neighbours in 721401 have already shared their thoughts'
-        : '\u2728 Be one of the first in 721401 to shape next';
-      node.style.opacity = '1';
+      socialTotal = res && res.total ? res.total : 0;
+      renderSocialProof();
     }).catch(function () {});
   }
 })();

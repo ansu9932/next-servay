@@ -83,6 +83,43 @@ a:hover { text-decoration: underline; }
 }
 .header-link { font-weight: 600; font-size: 14px; color: var(--muted); }
 
+/* language switcher */
+.header-right { display: flex; align-items: center; gap: 14px; }
+.lang-switch {
+  display: inline-flex; align-items: center; gap: 2px;
+  background: var(--green-soft); border: 1px solid var(--green-soft-2);
+  border-radius: 999px; padding: 3px;
+}
+.lang-btn {
+  font-family: inherit; font-weight: 700; font-size: 12.5px; cursor: pointer;
+  border: none; background: transparent; color: var(--green-700);
+  padding: 6px 11px; border-radius: 999px; line-height: 1; transition: all .15s;
+}
+.lang-btn:hover { background: rgba(64,204,82,.14); }
+.lang-btn.active { background: var(--green); color: #fff; box-shadow: var(--shadow-sm); }
+
+/* incentive line */
+.incentive {
+  display: inline-block; margin: 16px auto 0;
+  background: #FEF3DA; color: #B45309; font-weight: 700; font-size: 14px;
+  padding: 9px 16px; border-radius: 999px; border: 1px solid #FCE3B0;
+}
+.incentive-done { margin-top: 18px; }
+
+/* respondent #N badge (thank-you screen) */
+.respondent-badge {
+  display: inline-block; margin: 6px auto 4px;
+  background: var(--green-soft); color: var(--green-700);
+  font-weight: 700; font-size: 15px; padding: 10px 18px; border-radius: 999px;
+  border: 1px solid var(--green-soft-2);
+  animation: pop .5s cubic-bezier(.2,.8,.3,1.4);
+}
+.respondent-badge strong { font-size: 17px; }
+
+/* WhatsApp share button */
+.btn-whatsapp { background: #25D366; color: #fff; }
+.btn-whatsapp:hover { background: #1ebe5b; box-shadow: 0 10px 24px rgba(37,211,102,.4); }
+
 /* ---------- Hero ---------- */
 .hero { text-align: center; padding: 40px 0 8px; }
 .hero .logo-xl { height: 64px; margin: 0 auto 18px; }
