@@ -285,6 +285,11 @@ const server = http.createServer((req, res) => {
       });
     }
 
+    // public: total response count (for social proof on the survey page)
+    if (url === '/api/stats/public' && method === 'GET') {
+      return sendJson(res, 200, { ok: true, total: readAll().length });
+    }
+
     // admin login
     if (url === '/api/admin/login' && method === 'POST') {
       return readBody(req, (err, body) => {

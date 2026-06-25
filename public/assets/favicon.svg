@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="next mark">
-  <rect width="64" height="64" rx="16" fill="#0F172A"/>
-  <!-- forward green arrow mark -->
-  <g fill="#00D26A">
-    <rect x="12" y="28" width="28" height="8" rx="4"/>
-    <path d="M36 21 L52 32 L36 43 Z"/>
+  <rect width="64" height="64" rx="16" fill="#171821"/>
+  <!-- forward slanted green arrow mark -->
+  <g fill="#40CC52">
+    <polygon points="20,26 40,26 40,36 14,36"/>
+    <polygon points="40,21 54,31 40,41"/>
   </g>
-  <circle cx="16" cy="46" r="4" fill="#00D26A"/>
 </svg>

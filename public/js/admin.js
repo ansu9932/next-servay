@@ -9,7 +9,7 @@
   var allResponses = [];
   var stats = null;
 
-  var PALETTE = ['#00D26A', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899', '#06B6D4', '#84CC16', '#EF4444', '#0EA5E9'];
+  var PALETTE = ['#40CC52', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899', '#06B6D4', '#84CC16', '#EF4444', '#0EA5E9'];
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -160,7 +160,7 @@
   function renderCharts() {
     donut('roleDonut', 'roleLegend', stats.byRole);
     bars('wantAppBars', stats.wantApp);
-    bars('categoryBars', stats.categories, { limit: 8, color: '#00D26A' });
+    bars('categoryBars', stats.categories, { limit: 8, color: '#40CC52' });
     bars('feeBars', stats.deliveryFee, { color: '#3B82F6' });
     bars('paymentBars', stats.payment, { color: '#8B5CF6' });
     bars('areaBars', stats.area, { limit: 6, color: '#F59E0B' });

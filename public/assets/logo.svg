@@ -1,28 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 130" role="img" aria-label="next logo">
-  <defs>
-    <linearGradient id="arrowGrad" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#0BBF6A"/>
-      <stop offset="100%" stop-color="#00D26A"/>
-    </linearGradient>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 372 140" role="img" aria-label="next logo">
   <style>
-    .word { font-family: 'Poppins','Montserrat','Segoe UI',system-ui,sans-serif; font-weight: 800; font-size: 104px; letter-spacing: -5px; }
+    .word { font-family: 'Arial Black', Impact, 'Poppins', system-ui, sans-serif; font-weight: 900; font-size: 116px; letter-spacing: -7px; }
   </style>
 
-  <!-- "nex" wordmark -->
-  <text x="2" y="98" class="word" fill="#0F172A">nex</text>
+  <!-- full wordmark in ink (reads correctly on every font) -->
+  <text x="4" y="106" class="word" fill="#171821">next</text>
 
-  <!-- the "t": dark vertical stem -->
-  <rect x="232" y="34" width="16" height="66" rx="8" fill="#0F172A"/>
-
-  <!-- the "t" crossbar extended into a forward green arrow -->
-  <g fill="url(#arrowGrad)">
-    <!-- shaft / crossbar -->
-    <rect x="206" y="50" width="120" height="16" rx="8"/>
-    <!-- arrowhead pointing forward -->
-    <path d="M318 40 L356 58 L318 76 Z"/>
+  <!-- the final "t" crossbar extended into a forward, slanted green arrow -->
+  <g fill="#40CC52">
+    <!-- slanted shaft: left edge angled like a / cut -->
+    <polygon points="200,39 300,39 300,61 182,61"/>
+    <!-- arrowhead pointing forward, past the word -->
+    <polygon points="300,27 356,50 300,73"/>
   </g>
-
-  <!-- the dot concept -->
-  <circle cx="372" cy="92" r="9" fill="#00D26A"/>
 </svg>
