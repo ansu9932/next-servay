@@ -37,6 +37,7 @@
   --font: 'Poppins', 'Montserrat', 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
 
   --maxw: 760px;
+  --header-h: 64px;
 }
 
 * { box-sizing: border-box; }
@@ -73,7 +74,7 @@ a:hover { text-decoration: underline; }
 }
 .site-header .bar {
   display: flex; align-items: center; justify-content: space-between;
-  height: 64px;
+  height: var(--header-h);
 }
 .brand { display: flex; align-items: center; gap: 10px; }
 .brand img { height: 30px; width: auto; }
@@ -163,9 +164,28 @@ a:hover { text-decoration: underline; }
 }
 .card + .card { margin-top: 18px; }
 
-/* ---------- Progress ---------- */
-.progress-wrap { margin-bottom: 22px; }
-.progress-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
+/* ---------- Progress (sticky to top while scrolling) ---------- */
+.progress-wrap {
+  position: -webkit-sticky;
+  position: sticky;
+  top: var(--header-h);
+  z-index: 30;
+  background: var(--card);
+  /* pull flush to the card edges so the sticky bar spans full width */
+  margin: calc(-1 * clamp(20px, 4vw, 32px)) calc(-1 * clamp(20px, 4vw, 32px)) 18px;
+  padding: 14px clamp(20px, 4vw, 32px) 13px;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: 1px solid transparent;
+  transition: box-shadow .25s ease, border-color .25s ease;
+  will-change: box-shadow;
+}
+/* subtle elevation only once it actually sticks */
+.progress-wrap.is-stuck {
+  box-shadow: 0 8px 20px rgba(15,23,42,.09);
+  border-bottom-color: var(--line);
+}
+.progress-meta { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
+.progress-meta #stepCount { white-space: nowrap; flex: none; }
 .progress-track { height: 10px; background: var(--green-soft); border-radius: 999px; overflow: hidden; }
 .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green-600), var(--green)); border-radius: 999px; transition: width .4s cubic-bezier(.4,0,.2,1); }
 
@@ -365,6 +385,7 @@ table.data tr:hover td { background: #fafcff; }
   .grid-2 { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
+  :root { --header-h: 58px; }
   .roles { grid-template-columns: 1fr; }
   .options.cols-3 { grid-template-columns: 1fr 1fr; }
   .scale { grid-template-columns: repeat(6, 1fr); }
@@ -372,8 +393,20 @@ table.data tr:hover td { background: #fafcff; }
   .actions { flex-direction: column-reverse; }
   .actions .btn { width: 100%; }
   .hero { padding-top: 26px; }
+  /* header: keep brand + language switcher + admin on one tidy row */
+  .header-right { gap: 8px; }
+  .lang-switch { flex: none; }
+  .lang-btn { padding: 5px 9px; font-size: 12px; }
+  .brand img { height: 26px; }
+  .brand .city { padding-left: 8px; }
+  .header-link { font-size: 13px; }
+  .incentive { font-size: 13px; padding: 8px 13px; }
 }
-@media (max-width: 380px) {
+@media (max-width: 400px) {
+  :root { --header-h: 54px; }
+  .brand .city { display: none; }
+  .header-link { display: none; } /* Admin still reachable from the footer */
+  .lang-btn { padding: 5px 7px; font-size: 11.5px; }
   .options.cols-2, .options.cols-3 { grid-template-columns: 1fr; }
 }
 

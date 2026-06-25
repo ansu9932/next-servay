@@ -148,7 +148,6 @@
       'This helps us price delivery fairly so next can survive in our city.':
         'এটি আমাদের ডেলিভারি ফি ন্যায্যভাবে ঠিক করতে সাহায্য করে যাতে next আমাদের শহরে টিকে থাকতে পারে।',
       'What delivery fee would you happily pay?': 'কত ডেলিভারি ফি আপনি খুশি মনে দেবেন?',
-      'Only if it is free': 'শুধু বিনামূল্যে হলে',
       'Free above a cart value': 'নির্দিষ্ট কার্ট মূল্যের উপরে বিনামূল্যে',
       'A typical order would be worth about\u2026': 'সাধারণ একটি অর্ডারের মূল্য প্রায়\u2026',
       'Under \u20B9100': '\u20B9১০০-এর কম',
@@ -400,7 +399,6 @@
       'This helps us price delivery fairly so next can survive in our city.':
         'इससे हम डिलीवरी शुल्क सही तय कर पाते हैं ताकि next हमारे शहर में टिक सके।',
       'What delivery fee would you happily pay?': 'कितना डिलीवरी शुल्क आप खुशी से देंगे?',
-      'Only if it is free': 'सिर्फ़ अगर यह मुफ्त हो',
       'Free above a cart value': 'एक कार्ट मूल्य से ऊपर मुफ्त',
       'A typical order would be worth about\u2026': 'एक सामान्य ऑर्डर की कीमत लगभग\u2026',
       'Under \u20B9100': '\u20B9100 से कम',

@@ -64,7 +64,7 @@
       help: 'This helps us price delivery fairly so next can survive in our city.',
       fields: [
         { name: 'deliveryFee', type: 'radio', required: true, q: 'What delivery fee would you happily pay?', cols: 2,
-          options: ['Only if it is free', '₹10', '₹20', '₹30+', 'Free above a cart value'] },
+          options: ['₹10', '₹20', '₹30+', 'Free above a cart value'] },
         { name: 'orderValue', type: 'radio', required: true, q: 'A typical order would be worth about…', cols: 2,
           options: ['Under ₹100', '₹100–₹300', '₹300–₹500', '₹500+'] },
         { name: 'payment', type: 'checkbox', required: true, q: 'How would you like to pay?', cols: 3,
@@ -563,9 +563,32 @@
     });
 
     loadSocialProof();
+    setupStickyProgress();
     // allow deep-link ?start=1
     if (/[?&]start=1/.test(location.search)) startSurvey();
   });
+
+  /* Toggle a subtle shadow on the sticky progress bar only once it pins
+     under the header — keeps scrolling smooth and the bar always visible. */
+  function setupStickyProgress() {
+    var wrap = document.getElementById('progressWrap');
+    if (!wrap) return;
+    var header = document.querySelector('.site-header');
+    var ticking = false;
+    function check() {
+      ticking = false;
+      if (wrap.style.display === 'none' || !wrap.offsetParent) return;
+      var headerH = header ? header.getBoundingClientRect().height : 64;
+      var top = wrap.getBoundingClientRect().top;
+      if (Math.round(top) <= Math.round(headerH) + 1) wrap.classList.add('is-stuck');
+      else wrap.classList.remove('is-stuck');
+    }
+    function onScroll() {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(check); }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  }
 
   var socialTotal = null;
   function renderSocialProof() {
