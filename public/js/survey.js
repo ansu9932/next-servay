@@ -154,6 +154,7 @@
   var state = { role: null, data: {} };
   var steps = [roleStep, profileStep, closingStep]; // recomputed after role chosen
   var current = 0;
+  var advancing = false; // guards auto-advance on the welcome step
 
   function computeSteps() {
     var mid = [];
@@ -174,6 +175,7 @@
 
   /* ---------- Rendering ---------- */
   function render() {
+    advancing = false;
     var host = $('#steps');
     host.innerHTML = '';
     var step = steps[current];
@@ -185,6 +187,7 @@
 
     if (step.isRole) {
       wrap.appendChild(renderRoles());
+      wrap.appendChild(el('p', 'tap-hint', 'Just tap your answer — we\u2019ll take you straight to the next step \u2728'));
     } else {
       step.fields.forEach(function (f) {
         var node = renderField(f);
@@ -205,11 +208,15 @@
       c.setAttribute('tabindex', '0');
       c.innerHTML = '<div class="ic">' + r.ic + '</div><div class="t">' + r.t + '</div><div class="d">' + r.d + '</div>';
       function pick() {
+        if (advancing) return;
         state.role = r.value;
         computeSteps();
         Array.prototype.forEach.call(grid.children, function (ch) { ch.classList.remove('selected'); });
         c.classList.add('selected');
         updateChrome();
+        // Auto-advance: on the welcome step, selecting is all the user has to do.
+        advancing = true;
+        setTimeout(function () { next(); }, 380);
       }
       c.addEventListener('click', pick);
       c.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } });
@@ -361,15 +368,37 @@
   }
 
   /* ---------- chrome (progress + buttons) ---------- */
+  var CHEERS = ['Let\u2019s go! \uD83D\uDE80', 'Nice start! \uD83D\uDCAA', 'You\u2019re cruising \uD83C\uDF1F', 'Great answers! \uD83D\uDC4F', 'Almost there \uD83C\uDFAF', 'Last step! \uD83C\uDFC1'];
+  function cheer(n, total) {
+    var idx = Math.min(CHEERS.length - 1, Math.floor(((n - 1) / total) * CHEERS.length));
+    if (n === total) idx = CHEERS.length - 1;
+    return CHEERS[idx];
+  }
+  function timeLeft(n, total) {
+    var rem = total - n;
+    if (rem <= 0) return '';
+    var secs = rem * 18;
+    return secs >= 60 ? ' \u00B7 ~' + Math.ceil(secs / 60) + ' min left' : ' \u00B7 ~' + secs + 's left';
+  }
   function updateChrome() {
     var total = steps.length;
     var n = current + 1;
-    $('#stepLabel').textContent = steps[current].eyebrow || ('Step ' + n);
-    $('#stepCount').textContent = n + ' / ' + total;
+    var step = steps[current];
+    $('#stepLabel').textContent = cheer(n, total);
+    $('#stepCount').textContent = n + ' / ' + total + timeLeft(n, total);
     $('#progressFill').style.width = Math.round((n / total) * 100) + '%';
     $('#backBtn').style.display = current === 0 ? 'none' : '';
-    var isLast = current === steps.length - 1;
-    $('#nextBtn').innerHTML = isLast ? 'Submit survey <span class="arrow">✓</span>' : 'Continue <span class="arrow">→</span>';
+    var navActions = $('#navActions');
+    if (step.isRole) {
+      // Welcome step: selecting a role is enough — hide all nav buttons.
+      if (navActions) navActions.style.display = 'none';
+      $('#nextBtn').style.display = 'none';
+    } else {
+      if (navActions) navActions.style.display = '';
+      $('#nextBtn').style.display = '';
+      var isLast = current === steps.length - 1;
+      $('#nextBtn').innerHTML = isLast ? 'Submit survey <span class="arrow">\u2713</span>' : 'Continue <span class="arrow">\u2192</span>';
+    }
   }
 
   /* ---------- navigation ---------- */
@@ -418,7 +447,7 @@
     var waitlisted = state.data.joinWaitlist === '✅ Yes, add me';
     $('#surveyCard').innerHTML =
       '<div class="done">' +
-        '<div class="badge"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#00D26A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+        '<div class="badge"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#40CC52" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
         '<h2>Thank you! 🎉</h2>' +
         '<p>' + (waitlisted
           ? "You're on the waitlist — we'll reach out the moment next launches near you."
@@ -431,6 +460,48 @@
     var again = document.getElementById('againBtn');
     if (again) again.addEventListener('click', function () { location.reload(); });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    celebrate();
+  }
+
+  /* ---------- confetti celebration (canvas, no deps) ---------- */
+  function celebrate() {
+    var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+    var canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+    document.body.appendChild(canvas);
+    var ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize();
+    var colors = ['#40CC52', '#36B847', '#FFC83D', '#3B82F6', '#EC4899', '#8B5CF6'];
+    var parts = [];
+    for (var i = 0; i < 150; i++) {
+      parts.push({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.6,
+        s: 5 + Math.random() * 7,
+        col: colors[(Math.random() * colors.length) | 0],
+        vy: 2 + Math.random() * 4,
+        vx: -2.5 + Math.random() * 5,
+        rot: Math.random() * 6.28,
+        vr: -0.25 + Math.random() * 0.5
+      });
+    }
+    var start = Date.now();
+    (function frame() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      parts.forEach(function (p) {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.rot += p.vr;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.col;
+        ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * 0.6);
+        ctx.restore();
+      });
+      if (Date.now() - start < 2800) requestAnimationFrame(frame);
+      else canvas.remove();
+    })();
   }
 
   /* ---------- boot ---------- */
@@ -446,7 +517,20 @@
     $('#startBtn').addEventListener('click', startSurvey);
     $('#nextBtn').addEventListener('click', next);
     $('#backBtn').addEventListener('click', back);
+    loadSocialProof();
     // allow deep-link ?start=1
     if (/[?&]start=1/.test(location.search)) startSurvey();
   });
+
+  function loadSocialProof() {
+    var node = document.getElementById('socialProof');
+    if (!node) return;
+    fetch('/api/stats/public').then(function (r) { return r.json(); }).then(function (res) {
+      var n = res && res.total ? res.total : 0;
+      node.textContent = n >= 5
+        ? '\uD83D\uDE4C ' + n + ' neighbours in 721401 have already shared their thoughts'
+        : '\u2728 Be one of the first in 721401 to shape next';
+      node.style.opacity = '1';
+    }).catch(function () {});
+  }
 })();
