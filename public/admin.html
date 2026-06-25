@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>next — Admin · Survey insights</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0F172A" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body class="admin-bg">
+
+  <!-- Login gate -->
+  <section class="login-screen" id="loginScreen">
+    <div class="card login-card">
+      <img class="logo-xl" src="/assets/logo.svg" alt="next" />
+      <h2 style="margin:0 0 6px;">Admin dashboard</h2>
+      <p style="color:var(--muted); margin:0 0 22px;">Enter the password to view survey responses.</p>
+      <form id="loginForm">
+        <input type="password" id="pwd" placeholder="Admin password" autocomplete="current-password" />
+        <div class="err-msg" id="loginErr">Wrong password. Try again.</div>
+        <button class="btn btn-green btn-block" id="loginBtn" type="submit" style="margin-top:14px;">Log in →</button>
+      </form>
+      <p style="color:var(--muted-2); font-size:12px; margin-top:18px;">
+        <a href="/">← Back to survey</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <main id="dashboard" style="display:none;">
+    <div class="container wide">
+      <div class="admin-top">
+        <a class="brand" href="/"><img src="/assets/logo.svg" alt="next" /></a>
+        <div class="admin-actions">
+          <button class="btn btn-ghost btn-sm" id="refreshBtn">↻ Refresh</button>
+          <button class="btn btn-ghost btn-sm" id="exportBtn">⬇ Export CSV</button>
+          <button class="btn btn-primary btn-sm" id="logoutBtn">Log out</button>
+        </div>
+      </div>
+
+      <h1 style="font-size:24px; margin:6px 0 2px;">Survey insights · 721401</h1>
+      <p style="color:var(--muted); margin:0 0 20px;" id="lastUpdated">Loading…</p>
+
+      <!-- KPI cards -->
+      <div class="kpis" id="kpis"></div>
+
+      <!-- Charts -->
+      <div class="grid-2" style="margin-bottom:18px;">
+        <div class="panel">
+          <h3>Who responded?</h3>
+          <p class="p-sub">Split across the three sides of the marketplace.</p>
+          <div class="donut-wrap"><svg class="donut" id="roleDonut" viewBox="0 0 42 42"></svg><div class="legend" id="roleLegend"></div></div>
+        </div>
+        <div class="panel">
+          <h3>Would customers use next?</h3>
+          <p class="p-sub">The core demand signal.</p>
+          <div class="bars" id="wantAppBars"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:18px;">
+        <div class="panel">
+          <h3>Most wanted categories</h3>
+          <p class="p-sub">What customers want delivered fast.</p>
+          <div class="bars" id="categoryBars"></div>
+        </div>
+        <div class="panel">
+          <h3>Delivery fee willingness</h3>
+          <p class="p-sub">Helps model unit economics.</p>
+          <div class="bars" id="feeBars"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:18px;">
+        <div class="panel">
+          <h3>Preferred payment</h3>
+          <p class="p-sub">COD vs digital — matters a lot in tier-2/3 towns.</p>
+          <div class="bars" id="paymentBars"></div>
+        </div>
+        <div class="panel">
+          <h3>Top areas / localities</h3>
+          <p class="p-sub">Where to launch first for order density.</p>
+          <div class="bars" id="areaBars"></div>
+        </div>
+      </div>
+
+      <!-- Responses table -->
+      <div class="panel">
+        <h3>All responses</h3>
+        <p class="p-sub">Click any row to expand full answers.</p>
+        <div class="toolbar">
+          <input type="text" id="search" placeholder="🔍 Search name, area, comments…" />
+          <select id="roleFilter">
+            <option value="">All roles</option>
+            <option value="customer">Customers</option>
+            <option value="rider">Riders</option>
+            <option value="merchant">Merchants</option>
+          </select>
+          <select id="waitFilter">
+            <option value="">Everyone</option>
+            <option value="1">Waitlist only</option>
+          </select>
+        </div>
+        <div class="table-scroll">
+          <table class="data" id="respTable">
+            <thead>
+              <tr><th>When</th><th>Role</th><th>Name</th><th>Area</th><th>Key signal</th><th>Waitlist</th></tr>
+            </thead>
+            <tbody id="respBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <div class="big">📭</div>
+          <p>No responses match yet.</p>
+        </div>
+      </div>
+
+      <div class="site-footer"><div class="container">next admin · data stored privately on your server</div></div>
+    </div>
+  </main>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

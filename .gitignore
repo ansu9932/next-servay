@@ -1,0 +1,6 @@
+node_modules/
+# Runtime survey data — keep responses private, out of git
+data/responses.json
+data/*.tmp
+*.log
+.DS_Store
